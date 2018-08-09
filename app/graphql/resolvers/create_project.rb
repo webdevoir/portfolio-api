@@ -11,6 +11,7 @@ class Resolvers::CreateProject < GraphQL::Function
   argument :feature_image, !types.String
   argument :project_url, !types.String
   argument :technical_information, !types.String
+  argument :tags, !types.String
 
 	description 'This function allows a user to create a portfolio project.'
 

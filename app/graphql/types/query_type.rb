@@ -53,4 +53,19 @@ Types::QueryType = GraphQL::ObjectType.define do
       end
     }
   end
+  field :getInquiries, !types[Types::InquiryType] do
+    argument :category, types.String
+    resolve -> (obj, args, ctx) {
+      if args[:category].present?
+        return Inquiry.find_by(id: args[:comment_id], project_id: args[:project_Id])
+      else
+        return Inquiry.all
+      end
+    }
+  end
+  field :projectCategoriees, types[types.String] do
+    resolve -> (obj, args, ctx) do
+      Project.category.map { |a| a[0].capitalize }
+    end
+  end
 end

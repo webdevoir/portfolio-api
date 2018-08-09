@@ -104,6 +104,8 @@ class Resolvers::CreateProject < GraphQL::Function
       technical_information: args[:technical_information]
     )
 
+    tags = args[:tags].split(',')
+    
     for t in tags
       Tag.create!(
         title: args[:title],

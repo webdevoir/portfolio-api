@@ -208,6 +208,7 @@ DEPENDENCIES
   httparty
   jbuilder (~> 2.5)
   json_web_token
+  listen
   password_strength
   pg (>= 0.18, < 2.0)
   puma (~> 3.7)

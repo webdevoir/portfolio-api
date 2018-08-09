@@ -3,7 +3,6 @@ Types::QueryType = GraphQL::ObjectType.define do
   # Add root-level fields here.
   # They will be entry points for queries on your schema.
 
-  # TODO: remove me
   field :getProjects, !types[Types::ProjectType] do
     argument :category, types.String
     resolve -> (obj, args, ctx) {
@@ -40,6 +39,17 @@ Types::QueryType = GraphQL::ObjectType.define do
         raise GraphQL::ExecutionError.new("You need to be signed in to access this resource.")
 			else
         return User.find_by(id: args[:user_id])
+      end
+    }
+  end
+  field :getComments, !types[Types::CommentType] do
+    argument :project_id, types.Int
+    argument :comment_id, types.Int
+    resolve -> (obj, args, ctx) {
+      if args[:category].present?
+        return Comment.find_by(id: args[:comment_id], project_id: args[:project_Id])
+      else
+        return Comment.all
       end
     }
   end

@@ -24,4 +24,23 @@ Types::QueryType = GraphQL::ObjectType.define do
       end
     }
   end
+  field :getUsers, !types[Types::UserType] do
+    resolve -> (obj, args, ctx) {
+      if ctx[:current_user].blank?
+        raise GraphQL::ExecutionError.new("You need to be signed in to access this resource.")
+			else
+        return User.all
+      end
+    }
+  end
+  field :getUser, !types[Types::UserType] do
+    argument :user_id, types.Int
+    resolve -> (obj, args, ctx) {
+      if ctx[:current_user].blank?
+        raise GraphQL::ExecutionError.new("You need to be signed in to access this resource.")
+			else
+        return User.find_by(id: args[:user_id])
+      end
+    }
+  end
 end

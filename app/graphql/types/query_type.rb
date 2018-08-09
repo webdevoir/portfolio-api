@@ -63,7 +63,7 @@ Types::QueryType = GraphQL::ObjectType.define do
       end
     }
   end
-  field :projectCategoriees, types[types.String] do
+  field :projectCategories, types[types.String] do
     resolve -> (obj, args, ctx) do
       Project.category.map { |a| a[0].capitalize }
     end

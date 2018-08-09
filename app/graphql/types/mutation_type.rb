@@ -15,7 +15,10 @@ Types::MutationType = GraphQL::ObjectType.define do
   field :updateComment, function: Resolvers::UpdateComment.new
   field :deleteComment, function: Resolvers::DeleteComment.new
 
+  field :createReference, function: Resolvers::CreateReference.new
+  field :updateReference, function: Resolvers::UpdateReference.new
+  field :deleteReference, function: Resolvers::DeleteReference.new
+
   field :forgotPassword, function: Resolvers::ForgotPassword.new
   field :resetPassword, function: Resolvers::ResetPassword.new
-  field :updateUser, function: Resolvers::UpdateUser.new
 end

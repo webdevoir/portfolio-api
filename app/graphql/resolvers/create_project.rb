@@ -89,7 +89,7 @@ class Resolvers::CreateProject < GraphQL::Function
       raise GraphQL::ExecutionError.new(ctx.errors)
     end
 
-    Project.create!(
+    project = Project.create!(
       is_open: args[:is_open],
       title: args[:title],
       slug: args[:slug],
@@ -100,9 +100,18 @@ class Resolvers::CreateProject < GraphQL::Function
       repo_url: args[:repo_url],
       category: args[:category],
       feature_image: args[:feature_image],
-      project_url: args[:project_url]
+      project_url: args[:project_url],
       technical_information: args[:technical_information]
     )
+
+    for t in tags
+      Tag.create!(
+        title: args[:title],
+        post_id: project.id,
+        post: project
+      )
+    end
+    return project
   rescue ActiveRecord::RecordInvalid => e
     GraphQL::ExecutionError.new("Invalid input: #{e.record.errors.full_messages.join(', ')}")
   end

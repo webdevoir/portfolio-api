@@ -7,4 +7,5 @@ Types::UserType = GraphQL::ObjectType.define do
   field :admin, !types.Boolean, description: 'Admin status of the user'
   field :password_digest, !types.String, description: 'User password digest'
   field :profile_picture, !types.String, description: 'Profile picture of the user'
+  field :password_reset, !types.String, description: 'Password reset token for users'
 end

@@ -60,3 +60,5 @@ gem 'graphiql-rails', '1.4.4', group: :development
 gem 'pg'
 
 gem 'bcrypt', '~> 3.1.7'
+
+gem 'json_web_token'

@@ -22,8 +22,17 @@ class Resolvers::CreateProject < GraphQL::Function
   # args - are the arguments passed
   # _ctx - is the GraphQL context (which would be discussed later)
   def call(_obj, args, ctx)
+		if ctx[:current_user].blank?
+      raise GraphQL::ExecutionError.new("Authentication required.")
+    else
+      user = User.find_by(id: ctx[:current_user][:id])
+    end
 
     project = Project.find_by(slug: args[:slug]).first
+
+    if user.admin != true
+      raise GraphQL::ExecutionError.new("You do not have access to this resource.")
+    end
 
     if args[:title].blank?
       error = GraphQL::ExecutionError.new("This field is required.", options: { field: "title_field" } )

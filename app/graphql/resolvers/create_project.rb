@@ -15,7 +15,7 @@ class Resolvers::CreateProject < GraphQL::Function
 	description 'This function allows a user to create a portfolio project.'
 
   # return type from the mutation
-  type Types::Projectype
+  type Types::ProjectType
 
   # the mutation method
   # _obj - is parent object, which in this case is nil

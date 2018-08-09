@@ -1,11 +1,12 @@
-class Resolvers::DeleteProject < GraphQL::Function
+class Resolvers::DeleteUpvote < GraphQL::Function
   # arguments passed as "args"
+  argument :comment_id, !types.Int
   argument :project_id, !types.Int
 
-	description 'This function allows an admin to delete a portfolio project.'
+	description 'This function allows a user to upvote a comment'
 
   # return type from the mutation
-  type Types::ProjectType
+  type Types::UpvoteType
 
   # the mutation method
   # _obj - is parent object, which in this case is nil
@@ -18,19 +19,15 @@ class Resolvers::DeleteProject < GraphQL::Function
       user = User.find_by(id: ctx[:current_user][:id])
     end
 
-    project = Project.find_by(slug: args[:slug]).first
-
-    if user.admin != true
-      raise GraphQL::ExecutionError.new("You do not have access to this resource.")
-    end
-
-    if args[:slug].blank?
-      error = GraphQL::ExecutionError.new("This field is required.", options: { field: "slug_field" } )
-	    ctx.add_error(error)
-    end
+    project = Project.find_by(id: args[:project_id])
+    project = Project.find_by(id: args[:project_id])
 
     if project.blank?
-      error = GraphQL::ExecutionError.new("This project does not exist.", options: { field: "notfield" } )
+      raise GraphQL::ExecutionError.new("This project does not exist.", options: { field: "notification" } )
+    end
+
+    if args[:project_id].blank?
+      error = GraphQL::ExecutionError.new("This field is required.", options: { field: "notification" } )
 	    ctx.add_error(error)
     end
 
@@ -38,8 +35,9 @@ class Resolvers::DeleteProject < GraphQL::Function
       raise GraphQL::ExecutionError.new(ctx.errors)
     end
 
-    project.destroy!
-    return project
+    comment.upvote_count = comment.upvote_count - 1
+    comment.save!
+    return comment
   rescue ActiveRecord::RecordInvalid => e
     GraphQL::ExecutionError.new("Invalid input: #{e.record.errors.full_messages.join(', ')}")
   end

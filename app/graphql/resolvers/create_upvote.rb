@@ -1,13 +1,12 @@
-class Resolvers::UpdateComment < GraphQL::Function
+class Resolvers::CreateUpvote < GraphQL::Function
   # arguments passed as "args"
   argument :comment_id, !types.Int
   argument :project_id, !types.Int
-  argument :body, !types.String
 
-	description 'This function allows a user to update a comment for a portfolio project.'
+	description 'This function allows a user to upvote a comment'
 
   # return type from the mutation
-  type Types::CommentType
+  type Types::UpvoteType
 
   # the mutation method
   # _obj - is parent object, which in this case is nil
@@ -20,24 +19,19 @@ class Resolvers::UpdateComment < GraphQL::Function
       user = User.find_by(id: ctx[:current_user][:id])
     end
 
+    project = Project.find_by(id: args[:project_id])
     comment = Comment.find_by(id: args[:comment_id], project_id: args[:project_id])
+
+    if project.blank?
+      raise GraphQL::ExecutionError.new("This project does not exist.", options: { field: "notification" } )
+    end
 
     if comment.blank?
       raise GraphQL::ExecutionError.new("This comment does not exist.", options: { field: "notification" } )
     end
 
-    if args[:comment_id].blank?
-      error = GraphQL::ExecutionError.new("Please include the comment ID.", options: { field: "notification" } )
-	    ctx.add_error(error)
-    end
-
     if args[:project_id].blank?
-      error = GraphQL::ExecutionError.new("Please include the project ID.", options: { field: "notification" } )
-	    ctx.add_error(error)
-    end
-
-    if args[:body].blank?
-      error = GraphQL::ExecutionError.new("This field is required.", options: { field: "body_field" } )
+      error = GraphQL::ExecutionError.new("This field is required.", options: { field: "notification" } )
 	    ctx.add_error(error)
     end
 
@@ -45,9 +39,14 @@ class Resolvers::UpdateComment < GraphQL::Function
       raise GraphQL::ExecutionError.new(ctx.errors)
     end
 
-    comment.body = args[:body]
-    comment.save!
-    return comment
+    Upvote.create!(
+      project_id: args[:project_id],
+      comment_id: args[:comment_id],
+      user_id: ctx[:current_user][:id],
+      user: ctx[:current_user],
+      project: project,
+      comment: comment
+    )
   rescue ActiveRecord::RecordInvalid => e
     GraphQL::ExecutionError.new("Invalid input: #{e.record.errors.full_messages.join(', ')}")
   end

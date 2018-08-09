@@ -1,12 +1,12 @@
 class Resolvers::DeleteComment < GraphQL::Function
   # arguments passed as "args"
-  argument :comment_id, !types.String
-  argument :project_id, !types.String
+  argument :comment_id, !types.Int
+  argument :project_id, !types.Int
 
 	description 'This function allows a user to delete a comment for a portfolio project.'
 
   # return type from the mutation
-  type Types::ProjectType
+  type Types::CommentType
 
   # the mutation method
   # _obj - is parent object, which in this case is nil

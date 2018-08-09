@@ -1,12 +1,12 @@
 class Resolvers::CreateComment < GraphQL::Function
   # arguments passed as "args"
-  argument :project_id, !types.String
+  argument :project_id, !types.Int
   argument :body, !types.String
 
 	description 'This function allows a user to submit a comment for a portfolio project.'
 
   # return type from the mutation
-  type Types::Projectype
+  type Types::CommentType
 
   # the mutation method
   # _obj - is parent object, which in this case is nil

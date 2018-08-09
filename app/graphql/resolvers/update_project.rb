@@ -1,4 +1,4 @@
-class Resolvers::CreateProject < GraphQL::Function
+class Resolvers::UpdateProject < GraphQL::Function
   # arguments passed as "args"
   argument :title, !types.String
   argument :slug, !types.String
@@ -15,7 +15,7 @@ class Resolvers::CreateProject < GraphQL::Function
 	description 'This function allows a user to update a portfolio project.'
 
   # return type from the mutation
-  type Types::Projectype
+  type Types::ProjectType
 
   # the mutation method
   # _obj - is parent object, which in this case is nil

@@ -15,8 +15,8 @@ class GraphqlController < ApplicationController
   def current_user
     return nil if request.headers['Authorization'].blank?
     token = request.headers['Authorization'].split(' ').last
-    return nil if token == "None"
-    if token != nil
+    return nil if token.blank?
+    if token != "None"
       AuthToken.verify(token)
     end
   end

@@ -16,7 +16,9 @@ class GraphqlController < ApplicationController
     return nil if request.headers['Authorization'].blank?
     token = request.headers['Authorization'].split(' ').last
     return nil if token.blank?
-    AuthToken.verify(token)
+    if token != nil
+      AuthToken.verify(token)
+    end
   end
 
   # Handle form data, JSON body, or a blank value

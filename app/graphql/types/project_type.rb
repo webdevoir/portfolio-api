@@ -17,4 +17,5 @@ Types::ProjectType = GraphQL::ObjectType.define do
   field :technical_information, !types.String, description: 'Project technical information'
   field :comments, -> { Types::CommentType }, description: 'Link to comment object'
   field :project_images, -> { Types::ProjectImageType }, description: 'Link to project image object'
+  field :tags, -> { Types::TagType }, description: 'Link to tag object'
 end

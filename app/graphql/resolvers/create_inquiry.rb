@@ -41,7 +41,7 @@ class Resolvers::CreateInquiry < GraphQL::Function
       ctx.add_error(error)
     end
 
-		accepted_categories = ['Employment Opportunities', 'General Questions', 'Project Proposal']
+		accepted_categories = ['Employment Opportunities', 'General Questions', 'Suggestion', 'Something Else']
 
     if error.present?
       raise GraphQL::ExecutionError.new(ctx.errors)

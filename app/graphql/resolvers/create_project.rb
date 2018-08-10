@@ -1,17 +1,17 @@
 class Resolvers::CreateProject < GraphQL::Function
   # arguments passed as "args"
-  argument :title, !types.String
-  argument :slug, !types.String
-  argument :status, !types.String
-  argument :description, !types.String
-  argument :caption, !types.String
-  argument :milestones, !types.String
-  argument :repo_url, !types.String
-  argument :category, !types.String
-  argument :feature_image, !types.String
-  argument :project_url, !types.String
-  argument :technical_information, !types.String
-  argument :tags, !types.String
+  argument :title, types.String
+  argument :slug, types.String
+  argument :status, types.String
+  argument :description, types.String
+  argument :caption, types.String
+  argument :milestones, types.String
+  argument :repo_url, types.String
+  argument :category, types.String
+  argument :feature_image, types.String
+  argument :project_url, types.String
+  argument :technical_information, types.String
+  argument :tags, types.String
 
 	description 'This function allows a user to create a portfolio project.'
 
@@ -23,17 +23,8 @@ class Resolvers::CreateProject < GraphQL::Function
   # args - are the arguments passed
   # _ctx - is the GraphQL context (which would be discussed later)
   def call(_obj, args, ctx)
-		if ctx[:current_user].blank?
-      raise GraphQL::ExecutionError.new("Authentication required.")
-    else
-      user = User.find_by(id: ctx[:current_user][:id])
-    end
 
-    project = Project.find_by(slug: args[:slug]).first
-
-    if user.admin != true
-      raise GraphQL::ExecutionError.new("You do not have access to this resource.")
-    end
+    project = Project.where(slug: args[:slug]).first
 
     if args[:title].blank?
       error = GraphQL::ExecutionError.new("This field is required.", options: { field: "title_field" } )
@@ -59,20 +50,12 @@ class Resolvers::CreateProject < GraphQL::Function
       error = GraphQL::ExecutionError.new("This field is required.", options: { field: "milestones_field" } )
 	    ctx.add_error(error)
     end
-    if args[:repo_url].blank?
-      error = GraphQL::ExecutionError.new("This field is required.", options: { field: "repo_url_field" } )
-	    ctx.add_error(error)
-    end
     if args[:category].blank?
       error = GraphQL::ExecutionError.new("This field is required.", options: { field: "category_field" } )
 	    ctx.add_error(error)
     end
     if args[:feature_image].blank?
       error = GraphQL::ExecutionError.new("This field is required.", options: { field: "feature_image_field" } )
-	    ctx.add_error(error)
-    end
-    if args[:project_url].blank?
-      error = GraphQL::ExecutionError.new("This field is required.", options: { field: "project_url_field" } )
 	    ctx.add_error(error)
     end
     if args[:technical_information].blank?
@@ -90,7 +73,6 @@ class Resolvers::CreateProject < GraphQL::Function
     end
 
     project = Project.create!(
-      is_open: args[:is_open],
       title: args[:title],
       slug: args[:slug],
       status: args[:status],
@@ -105,12 +87,11 @@ class Resolvers::CreateProject < GraphQL::Function
     )
 
     tags = args[:tags].split(',')
-    
+
     for t in tags
       Tag.create!(
         title: args[:title],
-        post_id: project.id,
-        post: project
+        project_id: project
       )
     end
     return project

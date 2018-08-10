@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180809122053) do
+ActiveRecord::Schema.define(version: 20180810160909) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -51,6 +51,12 @@ ActiveRecord::Schema.define(version: 20180809122053) do
     t.string "feature_image"
     t.string "project_url"
     t.string "technical_information"
+    t.bigint "comments_id"
+    t.bigint "project_images_id"
+    t.bigint "tags_id"
+    t.index ["comments_id"], name: "index_projects_on_comments_id"
+    t.index ["project_images_id"], name: "index_projects_on_project_images_id"
+    t.index ["tags_id"], name: "index_projects_on_tags_id"
   end
 
   create_table "references", force: :cascade do |t|
@@ -65,6 +71,8 @@ ActiveRecord::Schema.define(version: 20180809122053) do
     t.string "title"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "project_id"
+    t.index ["project_id"], name: "index_tags_on_project_id"
   end
 
   create_table "upvotes", force: :cascade do |t|
@@ -86,4 +94,8 @@ ActiveRecord::Schema.define(version: 20180809122053) do
     t.string "password_reset"
   end
 
+  add_foreign_key "projects", "comments", column: "comments_id"
+  add_foreign_key "projects", "project_images", column: "project_images_id"
+  add_foreign_key "projects", "tags", column: "tags_id"
+  add_foreign_key "tags", "projects"
 end

@@ -1,6 +1,6 @@
 class Resolvers::CreateProjectImage < GraphQL::Function
   # arguments passed as "args"
-  argument :project_id, !types.Int
+  argument :slug, !types.String
   argument :image_url, !types.String
 
 	description 'This function allows an admin to add a project screenshot for a portfolio project.'
@@ -19,7 +19,7 @@ class Resolvers::CreateProjectImage < GraphQL::Function
       user = User.find_by(id: ctx[:current_user][:id])
     end
 
-    project = Project.find_by(id: args[:project_id])
+    project = Project.find_by(slug: args[:slug])
 
     if user.admin != true
       raise GraphQL::ExecutionError.new("You do not have access to this resource.")
@@ -33,7 +33,7 @@ class Resolvers::CreateProjectImage < GraphQL::Function
       error = GraphQL::ExecutionError.new("Please include a Project ID.", options: { field: "notification" } )
 	    ctx.add_error(error)
     end
-    
+
     if args[:image_url].blank?
       error = GraphQL::ExecutionError.new("This field is required.", options: { field: "image_url_field" } )
 	    ctx.add_error(error)

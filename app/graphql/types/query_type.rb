@@ -16,11 +16,7 @@ Types::QueryType = GraphQL::ObjectType.define do
   field :getProject, !types[Types::ProjectType] do
     argument :slug, types.String
     resolve -> (obj, args, ctx) {
-      if args[:slug].present?
-        return Project.find_by(slug: args[:slug])
-      else
-        return Project.all.first
-      end
+      return Project.all
     }
   end
   field :getUsers, !types[Types::UserType] do

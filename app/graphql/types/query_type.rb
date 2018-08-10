@@ -42,6 +42,15 @@ Types::QueryType = GraphQL::ObjectType.define do
       end
     }
   end
+  field :getCurrentUser, !types[Types::UserType] do
+    resolve -> (obj, args, ctx) {
+      if ctx[:current_user].blank?
+        raise GraphQL::ExecutionError.new("You need to be signed in to access this resource.")
+			else
+        return User.find_by(id: ctx[:current_user][:id])
+      end
+    }
+  end
   field :getComments, !types[Types::CommentType] do
     argument :project_id, types.Int
     argument :comment_id, types.Int

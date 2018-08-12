@@ -1,7 +1,8 @@
 class Resolvers::DeleteUpvote < GraphQL::Function
   # arguments passed as "args"
   argument :comment_id, !types.Int
-  argument :project_id, !types.Int
+  argument :slug, !types.String
+  argument :status, !types.String
 
 	description 'This function allows a user to upvote a comment'
 
@@ -19,11 +20,18 @@ class Resolvers::DeleteUpvote < GraphQL::Function
       user = User.find_by(id: ctx[:current_user][:id])
     end
 
-    project = Project.find_by(id: args[:project_id])
-    project = Project.find_by(id: args[:project_id])
+    if args[:status] == "Project"
+      project = Project.find_by(slug: args[:slug])
 
-    if project.blank?
-      raise GraphQL::ExecutionError.new("This project does not exist.", options: { field: "notification" } )
+      if project.blank?
+        raise GraphQL::ExecutionError.new("This project does not exist.", options: { field: "notification" } )
+      end
+    elsif args[:status] == "Post"
+      post = Post.find_by(slug: args[:slug])
+
+      if post.blank?
+        raise GraphQL::ExecutionError.new("This blog post does not exist.", options: { field: "notification" } )
+      end
     end
 
     if args[:project_id].blank?

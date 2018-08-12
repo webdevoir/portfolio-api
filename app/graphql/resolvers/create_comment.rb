@@ -1,6 +1,7 @@
 class Resolvers::CreateComment < GraphQL::Function
   # arguments passed as "args"
-  argument :project_id, !types.Int
+  argument :slug, !types.String
+  argument :status, !types.String
   argument :body, !types.String
 
 	description 'This function allows a user to submit a comment for a portfolio project.'
@@ -19,10 +20,18 @@ class Resolvers::CreateComment < GraphQL::Function
       user = User.find_by(id: ctx[:current_user][:id])
     end
 
-    project = Project.find_by(id: args[:project_id])
+    if args[:status] == "Project"
+      project = Project.find_by(slug: args[:slug])
 
-    if project.blank?
-      raise GraphQL::ExecutionError.new("This project does not exist.", options: { field: "notification" } )
+      if project.blank?
+        raise GraphQL::ExecutionError.new("This project does not exist.", options: { field: "notification" } )
+      end
+    elsif args[:status] == "Post"
+      post = Post.find_by(slug: args[:slug])
+
+      if post.blank?
+        raise GraphQL::ExecutionError.new("This blog post does not exist.", options: { field: "notification" } )
+      end
     end
 
     if args[:project_id].blank?
@@ -39,12 +48,11 @@ class Resolvers::CreateComment < GraphQL::Function
     end
 
     Comment.create!(
-      project_id: args[:project_id],
+      slug: args[:slug],
+      status: args[:status],
       body: args[:body],
       user_id: ctx[:current_user][:id],
-      user: ctx[:current_user],
-      upvote_count: 0,
-      project: project
+      user: ctx[:current_user]
     )
   rescue ActiveRecord::RecordInvalid => e
     GraphQL::ExecutionError.new("Invalid input: #{e.record.errors.full_messages.join(', ')}")

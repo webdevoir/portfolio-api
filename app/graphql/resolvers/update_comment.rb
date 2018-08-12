@@ -1,8 +1,8 @@
 class Resolvers::UpdateComment < GraphQL::Function
   # arguments passed as "args"
   argument :comment_id, !types.Int
-  argument :project_id, !types.Int
-  argument :body, !types.String
+  argument :slug, !types.String
+  argument :status, !types.String
 
 	description 'This function allows a user to update a comment for a portfolio project.'
 
@@ -20,7 +20,7 @@ class Resolvers::UpdateComment < GraphQL::Function
       user = User.find_by(id: ctx[:current_user][:id])
     end
 
-    comment = Comment.find_by(id: args[:comment_id], project_id: args[:project_id])
+    comment = Comment.find_by(id: args[:comment_id], slug: args[:slug], status: args[:status])
 
     if comment.blank?
       raise GraphQL::ExecutionError.new("This comment does not exist.", options: { field: "notification" } )

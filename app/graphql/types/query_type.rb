@@ -41,6 +41,16 @@ Types::QueryType = GraphQL::ObjectType.define do
       end
     }
   end
+  field :getPostsByTag, !types[Types::PostType] do
+    argument :tag, types.String
+    resolve -> (obj, args, ctx) {
+      if args[:category].present?
+        return Post.where(id: Tag.select("post_id").where(title: args[:tag]), status: "Published")
+      else
+        return Post.where(status: "Published")
+      end
+    }
+  end
   field :getPost, !types[Types::PostType] do
     argument :slug, types.String
     resolve -> (obj, args, ctx) {

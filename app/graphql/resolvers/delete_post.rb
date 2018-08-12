@@ -1,11 +1,11 @@
-class Resolvers::DeleteProject < GraphQL::Function
+class Resolvers::DeletePost < GraphQL::Function
   # arguments passed as "args"
   argument :post_id, !types.Int
 
 	description 'This function allows an admin to delete a blog post.'
 
   # return type from the mutation
-  type Types::ProjectType
+  type Types::PostType
 
   # the mutation method
   # _obj - is parent object, which in this case is nil

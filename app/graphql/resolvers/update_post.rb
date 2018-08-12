@@ -1,4 +1,4 @@
-class Resolvers::UpdateProject < GraphQL::Function
+class Resolvers::UpdatePost < GraphQL::Function
   # arguments passed as "args"
   argument :title, types.String
   argument :slug, types.String
@@ -9,7 +9,7 @@ class Resolvers::UpdateProject < GraphQL::Function
   argument :feature_image, types.String
   argument :tags, types.String
 
-	description 'This function allows an admin user to create a blog post.'
+	description 'This function allows an admin user to update a blog post.'
 
   # return type from the mutation
   type Types::PostType

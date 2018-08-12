@@ -1,4 +1,4 @@
-class Resolvers::CreateProject < GraphQL::Function
+class Resolvers::CreatePost < GraphQL::Function
   # arguments passed as "args"
   argument :title, types.String
   argument :slug, types.String

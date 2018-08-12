@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180810160909) do
+ActiveRecord::Schema.define(version: 20180812001723) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,6 +30,22 @@ ActiveRecord::Schema.define(version: 20180810160909) do
     t.string "category"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "posts", force: :cascade do |t|
+    t.string "title"
+    t.string "slug"
+    t.string "body"
+    t.string "status"
+    t.string "feature_image"
+    t.datetime "created_at", null: false
+    t.string "category"
+    t.bigint "tags_id"
+    t.bigint "user_id"
+    t.datetime "updated_at", null: false
+    t.string "description"
+    t.index ["tags_id"], name: "index_posts_on_tags_id"
+    t.index ["user_id"], name: "index_posts_on_user_id"
   end
 
   create_table "project_images", force: :cascade do |t|
@@ -92,8 +108,12 @@ ActiveRecord::Schema.define(version: 20180810160909) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "password_reset"
+    t.boolean "confirmed"
+    t.string "confirm_token"
   end
 
+  add_foreign_key "posts", "tags", column: "tags_id"
+  add_foreign_key "posts", "users"
   add_foreign_key "projects", "comments", column: "comments_id"
   add_foreign_key "projects", "project_images", column: "project_images_id"
   add_foreign_key "projects", "tags", column: "tags_id"

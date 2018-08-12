@@ -39,12 +39,35 @@ class Resolvers::CreateUser < GraphQL::Function
       raise GraphQL::ExecutionError.new(ctx.errors)
     end
 
+    require 'sendgrid-ruby'
+    include SendGrid
+
+    code = SecureRandom.urlsafe_base64.to_s
+    mail = Mail.new
+    mail.from = Email.new(email: 'support@jamesgallagher.io')
+    mail.subject = 'Verify Your Account - JamesGallagher.io'
+    personalization = Personalization.new
+    personalization.add_to(Email.new(email: args[:authProvider][:email][:email]))
+    personalization.add_substitution(Substitution.new(key: '-name-', value: args[:name]))
+    personalization.add_substitution(Substitution.new(key: '-code-', value: code))
+    mail.add_personalization(personalization)
+    mail.template_id = '13b8f94f-bcae-4ec6-b752-70d6cb59f932'
+
+    sg = SendGrid::API.new(api_key: "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")
+    begin
+        response = sg.client.mail._("send").post(request_body: mail.to_json)
+    rescue Exception => e
+        puts e.message
+    end
+
     User.create!(
       name: args[:name],
       email: args[:authProvider][:email][:email],
       password: args[:authProvider][:email][:password],
       admin: false,
-      profile_picture: "https://avatars2.githubusercontent.com/u/41574666?s=400&v=4"
+      profile_picture: "https://avatars2.githubusercontent.com/u/41574666?s=400&v=4",
+      confirmed: false,
+      confirm_token: code
     )
   rescue ActiveRecord::RecordInvalid => e
     GraphQL::ExecutionError.new("Invalid input: #{e.record.errors.full_messages.join(', ')}")

@@ -16,7 +16,27 @@ Types::QueryType = GraphQL::ObjectType.define do
   field :getProject, !types[Types::ProjectType] do
     argument :slug, types.String
     resolve -> (obj, args, ctx) {
-      return Project.all
+      project = Project.find_by(slug: args[:slug])
+      return Project.where(id: project.id)
+    }
+  end
+  field :getProjectImages, !types[Types::ProjectImageType] do
+    argument :slug, types.String
+    resolve -> (obj, args, ctx) {
+      project = Project.find_by(slug: args[:slug])
+      return ProjectImage.where(project_id: project.id)
+    }
+  end
+  field :getReferences, !types[Types::ReferenceType] do
+    resolve -> (obj, args, ctx) {
+      return Reference.all
+    }
+  end
+  field :getProjectTags, !types[Types::TagType] do
+    argument :slug, types.String
+    resolve -> (obj, args, ctx) {
+      project = Project.find_by(slug: args[:slug])
+      return Tag.where(project_id: project.id)
     }
   end
   field :getUsers, !types[Types::UserType] do

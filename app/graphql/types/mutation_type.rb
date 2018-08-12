@@ -5,6 +5,10 @@ Types::MutationType = GraphQL::ObjectType.define do
   field :updateProject, function: Resolvers::UpdateProject.new
   field :deleteProject, function: Resolvers::DeleteProject.new
 
+  field :createPost, function: Resolvers::CreatePost.new
+  field :updatePost, function: Resolvers::UpdatePost.new
+  field :deletePost, function: Resolvers::DeletePost.new
+
   field :createInquiry, function: Resolvers::CreateInquiry.new
 
   field :createUser, function: Resolvers::CreateUser.new

@@ -84,6 +84,11 @@ class Resolvers::UpdateProject < GraphQL::Function
 	    ctx.add_error(error)
     end
 
+    if project.blank?
+      error = GraphQL::ExecutionError.new("This project does not exist.", options: { field: "slug_field" } )
+	    ctx.add_error(error)
+    end
+
     if error.present?
       raise GraphQL::ExecutionError.new(ctx.errors)
     end

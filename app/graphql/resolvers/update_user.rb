@@ -6,6 +6,7 @@ class Resolvers::UpdateUser < GraphQL::Function
 	argument :name, !types.String
   argument :email, !types.String
 	argument :profile_picture, !types.String
+	argument :bio, !types.String
 
 	description 'This function allows a user to update their account.'
 
@@ -35,6 +36,11 @@ class Resolvers::UpdateUser < GraphQL::Function
 
 		if args[:profile_picture].blank?
       error = GraphQL::ExecutionError.new("This field is required.", options: { field: "profile_picture_field" } )
+      ctx.add_error(error)
+    end
+
+		if args[:bio].blank?
+      error = GraphQL::ExecutionError.new("This field is required.", options: { field: "bio_field" } )
       ctx.add_error(error)
     end
 
@@ -69,6 +75,7 @@ class Resolvers::UpdateUser < GraphQL::Function
 		user.name = args[:name]
 		user.email = args[:email]
 		user.profile_picture = args[:profile_picture]
+		user.bio = args[:bio]
     user.save!
 		return user
   end

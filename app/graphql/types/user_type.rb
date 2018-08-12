@@ -3,7 +3,8 @@ Types::UserType = GraphQL::ObjectType.define do
 
   field :id, !types.ID
   field :name, !types.String, description: 'Name of the user'
-  field :email, !types.String, description: 'User email'
+  field :email, !types.String, description: 'Email of the user'
+  field :bio, !types.String, description: 'Bio of the user'
   field :admin, !types.Boolean, description: 'Admin status of the user'
   field :password_digest, !types.String, description: 'User password digest'
   field :profile_picture, !types.String, description: 'Profile picture of the user'

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180812104733) do
+ActiveRecord::Schema.define(version: 20180812214447) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -112,6 +112,7 @@ ActiveRecord::Schema.define(version: 20180812104733) do
     t.string "password_reset"
     t.boolean "confirmed"
     t.string "confirm_token"
+    t.string "bio"
   end
 
   add_foreign_key "posts", "tags", column: "tags_id"

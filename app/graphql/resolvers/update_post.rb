@@ -71,12 +71,15 @@ class Resolvers::UpdatePost < GraphQL::Function
     post.feature_image = args[:feature_image]
     post.save!
 
+    current_tags = Tag.where(post_id: post.id, status: "Blog")
+    current_tags.destroy!
+
     tags = args[:tags].split(',')
 
     for t in tags
       Tag.create!(
-        title: args[:title],
-        project_id: post
+        title: t[:title],
+        post_id: post.id
       )
     end
     return post

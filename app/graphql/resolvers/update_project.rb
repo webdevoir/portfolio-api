@@ -105,6 +105,18 @@ class Resolvers::UpdateProject < GraphQL::Function
     project.project_url = args[:project_url]
     project.technical_information = args[:technical_information]
     project.save!
+    current_tags = Tag.where(post_id: post.id, status: "Blog")
+    current_tags.destroy!
+
+    tags = args[:tags].split(',')
+
+    for t in tags
+      Tag.create!(
+        title: t[:title],
+        post_id: post.id
+      )
+    end
+
     return project
   rescue ActiveRecord::RecordInvalid => e
     GraphQL::ExecutionError.new("Invalid input: #{e.record.errors.full_messages.join(', ')}")

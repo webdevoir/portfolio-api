@@ -35,9 +35,9 @@ Types::QueryType = GraphQL::ObjectType.define do
     argument :category, types.String
     resolve -> (obj, args, ctx) {
       if args[:category].present?
-        return Post.find_by(category: args[:category], status: "Published")
+        return Post.where(category: args[:category], status: "Published")
       else
-        return Post.find_by(status: "Published")
+        return Post.where(status: "Published")
       end
     }
   end

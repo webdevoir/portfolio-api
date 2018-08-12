@@ -7,6 +7,7 @@ class Resolvers::CreatePost < GraphQL::Function
   argument :description, types.String
   argument :category, types.String
   argument :feature_image, types.String
+  argument :description, types.String
   argument :tags, types.String
 
 	description 'This function allows an admin user to create a blog post.'
@@ -19,8 +20,17 @@ class Resolvers::CreatePost < GraphQL::Function
   # args - are the arguments passed
   # _ctx - is the GraphQL context (which would be discussed later)
   def call(_obj, args, ctx)
+    if ctx[:current_user].blank?
+      raise GraphQL::ExecutionError.new("Authentication required.")
+    else
+      user = User.find_by(id: ctx[:current_user][:id])
+    end
 
     post = Post.where(slug: args[:slug]).first
+
+    if user.admin != true
+      raise GraphQL::ExecutionError.new("You do not have access to this resource.")
+    end
 
     if args[:title].blank?
       error = GraphQL::ExecutionError.new("This field is required.", options: { field: "title_field" } )
@@ -34,16 +44,12 @@ class Resolvers::CreatePost < GraphQL::Function
       error = GraphQL::ExecutionError.new("This field is required.", options: { field: "status_field" } )
 	    ctx.add_error(error)
     end
-    if args[:body].blank?
-      error = GraphQL::ExecutionError.new("This field is required.", options: { field: "body_field" } )
-	    ctx.add_error(error)
-    end
     if args[:description].blank?
       error = GraphQL::ExecutionError.new("This field is required.", options: { field: "description_field" } )
 	    ctx.add_error(error)
     end
-    if args[:category].blank?
-      error = GraphQL::ExecutionError.new("This field is required.", options: { field: "category_field" } )
+    if args[:body].blank?
+      error = GraphQL::ExecutionError.new("This field is required.", options: { field: "body_field" } )
 	    ctx.add_error(error)
     end
     if args[:feature_image].blank?
@@ -58,7 +64,7 @@ class Resolvers::CreatePost < GraphQL::Function
 	    ctx.add_error(error)
     end
 
-    if project.present?
+    if post.present?
       error = GraphQL::ExecutionError.new("This slug has been used.", options: { field: "slug_field" } )
 	    ctx.add_error(error)
     end
@@ -74,14 +80,16 @@ class Resolvers::CreatePost < GraphQL::Function
       body: args[:body],
       description: args[:description],
       category: args[:category],
-      feature_image: args[:feature_image]
+      feature_image: args[:feature_image],
+      description: args[:description],
+      user: user
     )
 
     tags = args[:tags].split(',')
 
     for t in tags
       Tag.create!(
-        title: t[:title],
+        title: t,
         project_id: post.id,
         status: "Project"
       )

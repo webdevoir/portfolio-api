@@ -1,6 +1,3 @@
-require 'sendgrid-ruby'
-include SendGrid
-
 class Resolvers::CreateUser < GraphQL::Function
   AuthProviderInput = GraphQL::InputObjectType.define do
     name 'AuthProviderSignupData'
@@ -40,7 +37,6 @@ class Resolvers::CreateUser < GraphQL::Function
     end
 
     require 'sendgrid-ruby'
-    include SendGrid
 
     code = SecureRandom.urlsafe_base64.to_s
     mail = Mail.new

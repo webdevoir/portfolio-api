@@ -91,7 +91,8 @@ class Resolvers::CreateProject < GraphQL::Function
     for t in tags
       Tag.create!(
         title: args[:title],
-        project_id: project
+        project_id: project.id,
+        status: "Project"
       )
     end
     return project

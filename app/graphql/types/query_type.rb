@@ -20,6 +20,33 @@ Types::QueryType = GraphQL::ObjectType.define do
       return Project.where(id: project.id)
     }
   end
+
+  field :getAdminPosts, !types[Types::PostType] do
+    resolve -> (obj, args, ctx) {
+      if ctx[:current_user].blank?
+        raise GraphQL::ExecutionError.new("You need to be signed in to access this resource.")
+			else
+        return Post.all
+      end
+    }
+  end
+
+  field :getPosts, !types[Types::PostType] do
+    argument :category, types.String
+    resolve -> (obj, args, ctx) {
+      if args[:category].present?
+        return Post.find_by(category: args[:category], status: "Published")
+      else
+        return Post.find_by(status: "Published")
+      end
+    }
+  end
+  field :getPost, !types[Types::PostType] do
+    argument :slug, types.String
+    resolve -> (obj, args, ctx) {
+      return Post.where(slug: args[:slug])
+    }
+  end
   field :getProjectImages, !types[Types::ProjectImageType] do
     argument :slug, types.String
     resolve -> (obj, args, ctx) {

@@ -64,7 +64,7 @@ class Resolvers::UpdateUser < GraphQL::Function
 	    mail.add_personalization(personalization)
 	    mail.template_id = 'd-3b99e1c73fa242079a042b30fc43beea'
 
-	    sg = SendGrid::API.new(api_key: "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")
+	    sg = SendGrid::API.new(api_key: ENV['SENDGRID_API_KEY'])
 	    begin
 	        response = sg.client.mail._("send").post(request_body: mail.to_json)
 	    rescue Exception => e

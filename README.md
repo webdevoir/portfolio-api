@@ -86,7 +86,7 @@ rake test
 
 ## Database Structure
 
-Below is the structure of the database used in this application. This is still to be updated.
+Below is the structure of the database used in this application.
 
 [![Database Structure](https://github.com/jamesgallagher432/portfolio-api/raw/master/Database%20Structure.png)](https://github.com/jamesgallagher432/portfolio-api/raw/master/Database%20Structure.png)
 

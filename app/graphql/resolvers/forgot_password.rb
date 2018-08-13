@@ -29,7 +29,7 @@ class Resolvers::ForgotPassword < GraphQL::Function
       mail.add_personalization(personalization)
       mail.template_id = 'd-aceac9833b574970bfdcfbdedb1f4b7a'
 
-      sg = SendGrid::API.new(api_key: "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")
+      sg = SendGrid::API.new(api_key: ENV['SENDGRID_API_KEY'])
 	    begin
 	        response = sg.client.mail._("send").post(request_body: mail.to_json)
 	    rescue Exception => e

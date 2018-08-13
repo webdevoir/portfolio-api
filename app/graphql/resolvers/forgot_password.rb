@@ -27,7 +27,14 @@ class Resolvers::ForgotPassword < GraphQL::Function
       personalization.add_substitution(Substitution.new(key: '-name-', value: args[:name]))
       personalization.add_substitution(Substitution.new(key: '-code-', value: code))
       mail.add_personalization(personalization)
-      mail.template_id = '13b8f94f-bcae-4ec6-b752-70d6cb59f932'
+      mail.template_id = 'd-aceac9833b574970bfdcfbdedb1f4b7a'
+
+      sg = SendGrid::API.new(api_key: "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")
+	    begin
+	        response = sg.client.mail._("send").post(request_body: mail.to_json)
+	    rescue Exception => e
+	        puts e.message
+	    end
 
   		user.password_reset = code
       user.save!

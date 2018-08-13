@@ -62,7 +62,7 @@ class Resolvers::UpdateUser < GraphQL::Function
 	    personalization.add_substitution(Substitution.new(key: '-name-', value: args[:name]))
 	    personalization.add_substitution(Substitution.new(key: '-code-', value: code))
 	    mail.add_personalization(personalization)
-	    mail.template_id = '13b8f94f-bcae-4ec6-b752-70d6cb59f932'
+	    mail.template_id = 'd-3b99e1c73fa242079a042b30fc43beea'
 
 	    sg = SendGrid::API.new(api_key: "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")
 	    begin

@@ -20,16 +20,30 @@ class Resolvers::CreateUpvote < GraphQL::Function
       user = User.find_by(id: ctx[:current_user][:id])
     end
 
-    comment = Comment.find_by(id: args[:comment_id], slug: args[:slug], status: args[:status])
+    if args[:comment_id].blank?
+      error = GraphQL::ExecutionError.new("This field is required.", options: { field: "notification" } )
+	    ctx.add_error(error)
+    end
+
+    comment = Comment.find_by(id: args[:comment_id])
+
+    upvote = Upvote.find_by(comment_id: args[:comment_id])
+
+    if upvote.present?
+      upvote.destroy!
+      return user
+    end
 
     if args[:status] == "Project"
       project = Project.find_by(slug: args[:slug])
+      post_id = project.id
 
       if project.blank?
         raise GraphQL::ExecutionError.new("This project does not exist.", options: { field: "notification" } )
       end
     elsif args[:status] == "Post"
       post = Post.find_by(slug: args[:slug])
+      post_id = post.id
 
       if post.blank?
         raise GraphQL::ExecutionError.new("This blog post does not exist.", options: { field: "notification" } )
@@ -40,21 +54,15 @@ class Resolvers::CreateUpvote < GraphQL::Function
       raise GraphQL::ExecutionError.new("This comment does not exist.", options: { field: "notification" } )
     end
 
-    if args[:project_id].blank?
-      error = GraphQL::ExecutionError.new("This field is required.", options: { field: "notification" } )
-	    ctx.add_error(error)
-    end
-
     if error.present?
       raise GraphQL::ExecutionError.new(ctx.errors)
     end
 
     Upvote.create!(
-      project_id: args[:project_id],
+      project_id: post_id,
       comment_id: args[:comment_id],
       user_id: ctx[:current_user][:id],
       user: ctx[:current_user],
-      project: project,
       comment: comment
     )
   rescue ActiveRecord::RecordInvalid => e

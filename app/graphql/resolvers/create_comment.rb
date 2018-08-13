@@ -34,12 +34,18 @@ class Resolvers::CreateComment < GraphQL::Function
       end
     end
 
-    if args[:project_id].blank?
+    if args[:slug].blank?
       error = GraphQL::ExecutionError.new("This field is required.", options: { field: "notification" } )
 	    ctx.add_error(error)
     end
+
     if args[:body].blank?
       error = GraphQL::ExecutionError.new("This field is required.", options: { field: "body_field" } )
+	    ctx.add_error(error)
+    end
+
+    if args[:status].blank?
+      error = GraphQL::ExecutionError.new("This field is required.", options: { field: "status_field" } )
 	    ctx.add_error(error)
     end
 
@@ -51,7 +57,6 @@ class Resolvers::CreateComment < GraphQL::Function
       slug: args[:slug],
       status: args[:status],
       body: args[:body],
-      user_id: ctx[:current_user][:id],
       user: ctx[:current_user]
     )
   rescue ActiveRecord::RecordInvalid => e

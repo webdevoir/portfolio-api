@@ -61,7 +61,7 @@ class Resolvers::CreateUser < GraphQL::Function
       email: args[:authProvider][:email][:email],
       password: args[:authProvider][:email][:password],
       admin: false,
-      profile_picture: "https://avatars2.githubusercontent.com/u/41574666?s=400&v=4",
+      profile_picture: "http://bit.ly/2dqCGdd",
       confirmed: false,
       confirm_token: code,
       bio: ""

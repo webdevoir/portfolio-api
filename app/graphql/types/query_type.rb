@@ -64,6 +64,23 @@ Types::QueryType = GraphQL::ObjectType.define do
       return ProjectImage.where(project_id: project.id)
     }
   end
+  field :getUpvotes, !types[Types::UpvoteType] do
+    argument :slug, !types.String
+    argument :status, !types.String
+    argument :comment_id, !types.Int
+    resolve -> (obj, args, ctx) {
+      if args[:status] == "Project"
+        project = Project.find_by(slug: args[:slug])
+      else
+        project = Post.find_by(slug: args[:slug])
+      end
+      if project.present?
+        return Upvote.where(comment_id: args[:comment_id], project_id: project.id)
+      else
+        return Upvote.all
+      end
+    }
+  end
   field :getReferences, !types[Types::ReferenceType] do
     resolve -> (obj, args, ctx) {
       return Reference.all
@@ -112,24 +129,15 @@ Types::QueryType = GraphQL::ObjectType.define do
     }
   end
   field :getComments, !types[Types::CommentType] do
-    argument :project_id, types.Int
-    argument :comment_id, types.Int
+    argument :slug, types.String
+    argument :status, types.String
     resolve -> (obj, args, ctx) {
-      if args[:category].present?
-        return Comment.find_by(id: args[:comment_id], project_id: args[:project_Id])
-      else
-        return Comment.all
-      end
+      return Comment.where(slug: args[:slug], status: args[:status])
     }
   end
   field :getInquiries, !types[Types::InquiryType] do
-    argument :category, types.String
     resolve -> (obj, args, ctx) {
-      if args[:category].present?
-        return Inquiry.find_by(id: args[:comment_id], project_id: args[:project_Id])
-      else
-        return Inquiry.all
-      end
+      return Inquiry.all
     }
   end
   field :projectCategories, types[types.String] do

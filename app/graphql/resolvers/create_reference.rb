@@ -1,10 +1,10 @@
 class Resolvers::CreateReference < GraphQL::Function
   # arguments passed as "args"
-  argument :title, !types.String
-  argument :name, !types.String
-  argument :avatar, !types.String
-  argument :body, !types.String
-  argument :company, !types.String
+  argument :title, types.String
+  argument :name, types.String
+  argument :avatar, types.String
+  argument :body, types.String
+  argument :company, types.String
 
 	description 'This function allows an admin to create a reference.'
 

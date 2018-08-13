@@ -80,7 +80,7 @@ Types::QueryType = GraphQL::ObjectType.define do
     argument :slug, types.String
     resolve -> (obj, args, ctx) {
       post = Post.find_by(slug: args[:slug])
-      return Tag.where(project_id: post.id, status: "Blog")
+      return Tag.where(project_id: post.id)
     }
   end
   field :getUsers, !types[Types::UserType] do

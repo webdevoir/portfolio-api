@@ -69,3 +69,5 @@ gem 'password_strength'
 gem 'httparty'
 
 gem 'rack-cors'
+
+gem 'seed_dump'

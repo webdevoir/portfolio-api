@@ -152,6 +152,9 @@ GEM
       sprockets (>= 2.8, < 4.0)
       sprockets-rails (>= 2.0, < 4.0)
       tilt (>= 1.1, < 3)
+    seed_dump (3.3.1)
+      activerecord (>= 4)
+      activesupport (>= 4)
     selenium-webdriver (3.14.0)
       childprocess (~> 0.5)
       rubyzip (~> 1.2)
@@ -216,6 +219,7 @@ DEPENDENCIES
   rack-cors
   rails (~> 5.1.6)
   sass-rails (~> 5.0)
+  seed_dump
   selenium-webdriver
   sendgrid-ruby
   spring

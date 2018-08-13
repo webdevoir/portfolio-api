@@ -16,7 +16,7 @@ class Resolvers::AdminDeleteUser < GraphQL::Function
   # _ctx - is the GraphQL context (which would be discussed later)
   def call(_obj, args, ctx)
 		user = User.find_by(id: ctx[:current_user][:id])
-		target = User.find_by(user_id: args[:user_id])
+		target = User.find_by(id: args[:user_id])
 		if ctx[:current_user].blank?
       raise GraphQL::ExecutionError.new("Authentication required.")
     end

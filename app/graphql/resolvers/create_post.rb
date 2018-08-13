@@ -57,7 +57,7 @@ class Resolvers::CreatePost < GraphQL::Function
 	    ctx.add_error(error)
     end
 
-    accepted_status = ['Published', 'Draft']
+    accepted_status = ['Published', 'Unpublished']
 
     if accepted_status.exclude?(args[:status])
       error = GraphQL::ExecutionError.new("This status is invalid.", options: { field: "status_field" } )
@@ -78,7 +78,6 @@ class Resolvers::CreatePost < GraphQL::Function
       slug: args[:slug],
       status: args[:status],
       body: args[:body],
-      description: args[:description],
       category: args[:category],
       feature_image: args[:feature_image],
       description: args[:description],

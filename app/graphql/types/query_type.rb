@@ -81,6 +81,13 @@ Types::QueryType = GraphQL::ObjectType.define do
       end
     }
   end
+  field :getMainPostUpvotes, !types[Types::UpvoteType] do
+    argument :slug, !types.String
+    resolve -> (obj, args, ctx) {
+      project = Post.find_by(slug: args[:slug])
+      return Upvote.where(comment_id: 1, project_id: project.id)
+    }
+  end
   field :getReferences, !types[Types::ReferenceType] do
     resolve -> (obj, args, ctx) {
       return Reference.all

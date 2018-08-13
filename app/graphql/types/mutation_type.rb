@@ -25,4 +25,5 @@ Types::MutationType = GraphQL::ObjectType.define do
 
   field :forgotPassword, function: Resolvers::ForgotPassword.new
   field :resetPassword, function: Resolvers::ResetPassword.new
+  field :adminDeleteUser, function: Resolvers::AdminDeleteUser.new
 end

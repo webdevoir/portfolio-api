@@ -18,13 +18,13 @@ class Resolvers::DeletePost < GraphQL::Function
       user = User.find_by(id: ctx[:current_user][:id])
     end
 
-    post = Post.find_by(slug: args[:slug]).first
+    post = Post.find_by(id: args[:post_id])
 
     if user.admin != true
       raise GraphQL::ExecutionError.new("You do not have access to this resource.")
     end
 
-    if args[:slug].blank?
+    if args[:post_id].blank?
       error = GraphQL::ExecutionError.new("This field is required.", options: { field: "slug_field" } )
 	    ctx.add_error(error)
     end

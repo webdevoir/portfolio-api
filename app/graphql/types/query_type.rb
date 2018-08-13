@@ -107,7 +107,7 @@ Types::QueryType = GraphQL::ObjectType.define do
       if ctx[:current_user].blank?
         raise GraphQL::ExecutionError.new("You need to be signed in to access this resource.")
 			else
-        return User.find_by(id: ctx[:current_user][:id])
+        return User.where(id: ctx[:current_user][:id])
       end
     }
   end

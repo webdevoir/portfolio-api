@@ -63,7 +63,8 @@ class Resolvers::CreateUser < GraphQL::Function
       admin: false,
       profile_picture: "https://avatars2.githubusercontent.com/u/41574666?s=400&v=4",
       confirmed: false,
-      confirm_token: code
+      confirm_token: code,
+      bio: ""
     )
   rescue ActiveRecord::RecordInvalid => e
     GraphQL::ExecutionError.new("Invalid input: #{e.record.errors.full_messages.join(', ')}")

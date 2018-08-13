@@ -24,7 +24,7 @@ class Resolvers::CreateProject < GraphQL::Function
   # _ctx - is the GraphQL context (which would be discussed later)
   def call(_obj, args, ctx)
 
-    project = Project.where(slug: args[:slug]).first
+    project = Project.where(slug: args[:slug])
 
     if args[:title].blank?
       error = GraphQL::ExecutionError.new("This field is required.", options: { field: "title_field" } )

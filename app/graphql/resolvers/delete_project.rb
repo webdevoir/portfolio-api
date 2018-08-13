@@ -18,14 +18,14 @@ class Resolvers::DeleteProject < GraphQL::Function
       user = User.find_by(id: ctx[:current_user][:id])
     end
 
-    project = Project.find_by(slug: args[:slug]).first
+    project = Project.find_by(id: args[:project_id])
 
     if user.admin != true
       raise GraphQL::ExecutionError.new("You do not have access to this resource.")
     end
 
-    if args[:slug].blank?
-      error = GraphQL::ExecutionError.new("This field is required.", options: { field: "slug_field" } )
+    if args[:project_id].blank?
+      error = GraphQL::ExecutionError.new("This field is required.", options: { field: "project_id_field" } )
 	    ctx.add_error(error)
     end
 
@@ -36,6 +36,12 @@ class Resolvers::DeleteProject < GraphQL::Function
 
     if error.present?
       raise GraphQL::ExecutionError.new(ctx.errors)
+    end
+
+    tags = Tag.find_by(project_id: args[:project_id], status: "Project")
+
+    if tags.present?
+      tags.destroy!
     end
 
     project.destroy!

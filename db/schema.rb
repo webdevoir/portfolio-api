@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180812214447) do
+ActiveRecord::Schema.define(version: 20180813104041) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -116,9 +116,8 @@ ActiveRecord::Schema.define(version: 20180812214447) do
   end
 
   add_foreign_key "posts", "tags", column: "tags_id"
-  add_foreign_key "posts", "users"
+  add_foreign_key "posts", "users", on_delete: :cascade
   add_foreign_key "projects", "comments", column: "comments_id"
   add_foreign_key "projects", "project_images", column: "project_images_id"
   add_foreign_key "projects", "tags", column: "tags_id"
-  add_foreign_key "tags", "projects"
 end

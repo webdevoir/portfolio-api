@@ -26,7 +26,25 @@ Types::QueryType = GraphQL::ObjectType.define do
       if ctx[:current_user].blank?
         raise GraphQL::ExecutionError.new("You need to be signed in to access this resource.")
 			else
+        user = User.find_by(if: ctx[:current_user][:id])
+        if user.admin != true
+          raise GraphQL::ExecutionError.new("You do not have permission to access this resource.")
+        end
         return Post.all
+      end
+    }
+  end
+
+  field :getFeedback, !types[Types::FeedbackType] do
+    resolve -> (obj, args, ctx) {
+      if ctx[:current_user].blank?
+        raise GraphQL::ExecutionError.new("You need to be signed in to access this resource.")
+			else
+        user = User.find_by(if: ctx[:current_user][:id])
+        if user.admin != true
+          raise GraphQL::ExecutionError.new("You do not have permission to access this resource.")
+        end
+        return Feedback.all
       end
     }
   end
